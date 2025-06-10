@@ -9,8 +9,8 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: {
-    default: "BondPro - Bail Bonds Management Software | Defendant Tracking & Court Management",
-    template: "%s | BondPro Bail Bonds Software"
+    default: "Clickbail - Bail Bonds Management Software | Defendant Tracking & Court Management",
+    template: "%s | Clickbail Bail Bonds Software"
   },
   description: "Leading bail bonds management software with GPS tracking, court date management, payment processing, and defendant monitoring. Trusted by 500+ bonding companies nationwide. Start your free trial today.",
   keywords: [
@@ -25,15 +25,15 @@ export const metadata: Metadata = {
     "pretrial services software",
     "bail enforcement tracking"
   ].join(", "),
-  authors: [{ name: "BondPro Team", url: "https://bondpro.com" }],
-  creator: "BondPro",
-  publisher: "BondPro",
+  authors: [{ name: "Clickbail Team", url: "https://clickbail.com" }],
+  creator: "Clickbail",
+  publisher: "Clickbail",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://bondpro.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://clickbail.com'),
   alternates: {
     canonical: '/',
   },
@@ -41,24 +41,24 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: '/',
-    siteName: 'BondPro',
-    title: 'BondPro - #1 Bail Bonds Management Software',
+    siteName: 'Clickbail',
+    title: 'Clickbail - #1 Bail Bonds Management Software',
     description: 'Transform your bail bonds business with our all-in-one platform. GPS tracking, automated compliance, digital paperwork, and more. Trusted by 500+ companies.',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'BondPro Bail Bonds Management Software Dashboard',
+        alt: 'Clickbail Bail Bonds Management Software Dashboard',
       }
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'BondPro - Bail Bonds Management Software',
+    title: 'Clickbail - Bail Bonds Management Software',
     description: 'Leading bail bonds management platform with GPS tracking and automated compliance. Start your free trial today.',
     images: ['/og-image.jpg'],
-    creator: '@bondpro',
+    creator: '@clickbail',
   },
   robots: {
     index: true,
@@ -95,7 +95,7 @@ export default function RootLayout({
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
         <meta httpEquiv="X-Frame-Options" content="DENY" />
         <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
-        <link rel="canonical" href="https://bondpro.com" />
+        <link rel="canonical" href="https://clickbail.com" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -104,7 +104,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="BondPro" />
+        <meta name="apple-mobile-web-app-title" content="Clickbail" />
       </head>
       <body className={inter.className}>
         {/* Structured Data for SEO */}
@@ -112,14 +112,14 @@ export default function RootLayout({
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            "name": "BondPro",
+            "name": "Clickbail",
             "applicationCategory": "BusinessApplication",
             "operatingSystem": "Web Browser",
             "description": "Professional bail bonds management software with GPS tracking, court management, and automated compliance features.",
-            "url": "https://bondpro.com",
+            "url": "https://clickbail.com",
             "author": {
               "@type": "Organization",
-              "name": "BondPro"
+              "name": "Clickbail"
             },
             "offers": {
               "@type": "Offer",

@@ -1,6 +1,6 @@
 {
-  "name": "BondPro - Bail Bonds Management Software",
-  "short_name": "BondPro",
+  "name": "Clickbail - Bail Bonds Management Software",
+  "short_name": "Clickbail",
   "description": "Professional bail bonds management software with GPS tracking and court management",
   "start_url": "/",
   "display": "standalone",
@@ -35,14 +35,14 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "BondPro Dashboard Desktop View"
+      "label": "Clickbail Dashboard Desktop View"
     },
     {
       "src": "/screenshot-mobile.png", 
       "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "BondPro Mobile Dashboard"
+      "label": "Clickbail Mobile Dashboard"
     }
   ]
 } 

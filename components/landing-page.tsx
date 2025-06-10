@@ -582,7 +582,7 @@ export function LandingPage() {
           <div className="text-center mb-16">
             <h2 id="faq-heading" className="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Get answers to common questions about bail bonds management software and how BondPro can help your business
+              Get answers to common questions about bail bonds management software and how Clickbail can help your business
             </p>
           </div>
 
@@ -595,7 +595,7 @@ export function LandingPage() {
               
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Can I manage court dates and calendar integration?</h3>
-                <p className="text-gray-600">Yes, BondPro includes comprehensive court date management with calendar integration, automated reminders, and scheduling tools to ensure you never miss important court appearances.</p>
+                <p className="text-gray-600">Yes, Clickbail includes comprehensive court date management with calendar integration, automated reminders, and scheduling tools to ensure you never miss important court appearances.</p>
               </div>
               
               <div>
@@ -617,7 +617,7 @@ export function LandingPage() {
               
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Can multiple agents use the same bonding company account?</h3>
-                <p className="text-gray-600">Absolutely. BondPro supports multi-user access with role-based permissions, allowing different access levels for agents, administrators, and support staff within your bail bond business.</p>
+                <p className="text-gray-600">Absolutely. Clickbail supports multi-user access with role-based permissions, allowing different access levels for agents, administrators, and support staff within your bail bond business.</p>
               </div>
               
               <div>
