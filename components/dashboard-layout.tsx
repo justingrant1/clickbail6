@@ -6,11 +6,13 @@ import { useState } from "react"
 import { UserNav } from "@/components/user-nav"
 import { Sidebar } from "@/components/sidebar"
 import { Search } from "@/components/search"
-import { Menu } from "lucide-react"
+import { Menu, Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [notificationCount] = useState(3) // Mock notification count
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -34,7 +36,19 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           <div className="flex-1 px-2 sm:px-4 md:px-6 lg:px-8 max-w-2xl">
             <Search />
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" className="relative">
+              <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
+              {notificationCount > 0 && (
+                <Badge 
+                  variant="destructive" 
+                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                >
+                  {notificationCount}
+                </Badge>
+              )}
+              <span className="sr-only">Notifications</span>
+            </Button>
             <UserNav />
           </div>
         </div>

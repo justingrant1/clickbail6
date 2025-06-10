@@ -71,25 +71,24 @@ export function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-purple-900 via-purple-800 to-pink-800 text-white py-20">
+      <section className="bg-gradient-to-br from-purple-900 via-purple-800 to-pink-800 text-white py-20" role="banner">
         <div className="container mx-auto px-4">
           <div className="flex items-center mb-8">
-            <Shield className="h-5 w-5 mr-2" />
-            <span className="text-purple-200">Trusted by 500+ Bail Bond Companies</span>
+            <Shield className="h-5 w-5 mr-2" aria-hidden="true" />
+            <span className="text-purple-200">Trusted by 500+ Bail Bond Companies Nationwide</span>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-5xl lg:text-6xl font-bold mb-6">
-                Stop Losing{" "}
+                Best Bail Bonds Management Software - Stop Losing{" "}
                 <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                   Money & Time
                 </span>
               </h1>
 
               <p className="text-xl text-purple-100 mb-8 leading-relaxed">
-                The all-in-one platform that transforms how bail bond companies operate. Track defendants, manage
-                finances, automate paperwork, and grow your business with cutting-edge technology.
+                The #1 bail bonds management platform that transforms how bonding companies operate. Track defendants with GPS monitoring, manage court dates, automate compliance paperwork, and grow your business with cutting-edge technology trusted by industry leaders.
               </p>
 
               <div className="grid sm:grid-cols-2 gap-4 mb-8">
@@ -222,15 +221,14 @@ export function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20">
+      <section id="features" className="py-20" role="main">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Everything You Need to Run Your Bail Bond Business
+              Complete Bail Bonds Management Software Features
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              From defendant tracking to financial management, we've built the complete solution that grows with your
-              business
+              From GPS defendant tracking to automated financial management, we've built the complete bail bonds software solution that grows with your bonding business and ensures compliance
             </p>
           </div>
 
@@ -574,6 +572,64 @@ export function LandingPage() {
             <p className="text-xl text-gray-600">
               All plans include: SSL encryption, 99.9% uptime SLA, regular backups, and 24/7 monitoring
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-20" role="region" aria-labelledby="faq-heading">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 id="faq-heading" className="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Get answers to common questions about bail bonds management software and how BondPro can help your business
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">How does GPS defendant tracking work?</h3>
+                <p className="text-gray-600">Our bail bonds software includes real-time GPS monitoring with customizable geo-fencing zones. Set inclusion/exclusion areas and receive instant alerts for violations, ensuring complete defendant compliance monitoring.</p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Can I manage court dates and calendar integration?</h3>
+                <p className="text-gray-600">Yes, BondPro includes comprehensive court date management with calendar integration, automated reminders, and scheduling tools to ensure you never miss important court appearances.</p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Is the bail bonds software secure and compliant?</h3>
+                <p className="text-gray-600">Absolutely. Our platform features bank-grade encryption, secure data storage, automated compliance reporting, and meets all industry standards for bail bond management security.</p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">How long does setup take for new bonding companies?</h3>
+                <p className="text-gray-600">Most bail bond companies are up and running within 24 hours. Our team provides complete onboarding, data migration assistance, and training to ensure a smooth transition to our management platform.</p>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Does BondPro integrate with existing payment systems?</h3>
+                <p className="text-gray-600">Yes, our bail bonds software integrates with major payment processors, allowing you to handle premium payments, fee collection, and financial reporting all within one platform.</p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Can multiple agents use the same bonding company account?</h3>
+                <p className="text-gray-600">Absolutely. BondPro supports multi-user access with role-based permissions, allowing different access levels for agents, administrators, and support staff within your bail bond business.</p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">What support options are available for bail bond companies?</h3>
+                <p className="text-gray-600">We provide 24/7 phone support, live chat, comprehensive training materials, video tutorials, and dedicated account management for all bail bond companies using our software.</p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Is there a contract or can I cancel anytime?</h3>
+                <p className="text-gray-600">No long-term contracts required. Start with our 30-day free trial and cancel anytime. We believe our bail bonds management software will speak for itself.</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

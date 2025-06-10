@@ -144,7 +144,12 @@ export function MainDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-center py-6 text-sm sm:text-base text-muted-foreground">
-                No recent clients to display
+                <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground/40" />
+                <p className="mb-4">No recent clients to display</p>
+                <Button variant="outline" size="sm">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add First Client
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -158,7 +163,12 @@ export function MainDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-center py-6 text-sm sm:text-base text-muted-foreground">
-                No recent bonds to display
+                <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground/40" />
+                <p className="mb-4">No recent bonds to display</p>
+                <Button variant="outline" size="sm">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Create First Bond
+                </Button>
               </div>
             </CardContent>
           </Card>
