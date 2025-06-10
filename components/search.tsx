@@ -14,8 +14,12 @@ export function Search() {
       <div className="flex">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="rounded-r-none border-r-0">
-              {searchType}
+            <Button
+              variant="outline"
+              className="rounded-r-none border-r-0 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap min-h-[36px] sm:min-h-[40px]"
+            >
+              <span className="hidden sm:inline">{searchType}</span>
+              <span className="sm:hidden">{searchType.slice(0, 3)}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -26,8 +30,11 @@ export function Search() {
           </DropdownMenuContent>
         </DropdownMenu>
         <div className="relative flex-1">
-          <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder={`Search by ${searchType.toLowerCase()}...`} className="pl-9 rounded-l-none" />
+          <SearchIcon className="absolute left-2 sm:left-3 top-1/2 h-3 w-3 sm:h-4 sm:w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder={`Search ${searchType.toLowerCase()}...`}
+            className="pl-7 sm:pl-9 rounded-l-none text-sm sm:text-base min-h-[36px] sm:min-h-[40px]"
+          />
         </div>
       </div>
     </div>

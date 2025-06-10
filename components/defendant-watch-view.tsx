@@ -288,22 +288,24 @@ export function DefendantWatchView() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Defendant Watch</h2>
-          <p className="text-muted-foreground">Monitor and manage defendants on bail with real-time status updates.</p>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Defendant Watch</h2>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Monitor and manage defendants on bail with real-time status updates.
+          </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
+        <div className="flex flex-col sm:flex-row items-center gap-2">
+          <Button variant="outline" size="sm" className="w-full sm:w-auto">
             <RefreshCw className="mr-2 h-4 w-4" />
             Refresh
           </Button>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="w-full sm:w-auto">
             <Download className="mr-2 h-4 w-4" />
             Export
           </Button>
-          <Button size="sm">
+          <Button size="sm" className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
             Add Defendant
           </Button>
@@ -311,14 +313,14 @@ export function DefendantWatchView() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Defendants</CardTitle>
             <UserCheck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.total}</div>
+            <div className="text-xl sm:text-2xl font-bold">{stats.total}</div>
             <p className="text-xs text-muted-foreground">Defendants currently being monitored</p>
           </CardContent>
         </Card>
@@ -328,7 +330,7 @@ export function DefendantWatchView() {
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{Math.round((stats.compliant / stats.total) * 100)}%</div>
+            <div className="text-xl sm:text-2xl font-bold">{Math.round((stats.compliant / stats.total) * 100)}%</div>
             <Progress className="mt-2" value={(stats.compliant / stats.total) * 100} />
             <p className="mt-2 text-xs text-muted-foreground">
               {stats.compliant} of {stats.total} defendants compliant
@@ -341,7 +343,7 @@ export function DefendantWatchView() {
             <XCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.missed + stats.late}</div>
+            <div className="text-xl sm:text-2xl font-bold">{stats.missed + stats.late}</div>
             <p className="text-xs text-muted-foreground">
               {stats.missed} missed, {stats.late} late
             </p>
@@ -353,14 +355,14 @@ export function DefendantWatchView() {
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.highRisk}</div>
+            <div className="text-xl sm:text-2xl font-bold">{stats.highRisk}</div>
             <p className="text-xs text-muted-foreground">{stats.warrant} with active warrants</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Search and Filter */}
-      <div className="flex flex-col gap-4 md:flex-row">
+      <div className="flex flex-col gap-3 sm:gap-4 md:flex-row">
         <div className="relative flex-1">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -370,8 +372,8 @@ export function DefendantWatchView() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <div className="flex gap-2">
-          <div className="w-[180px]">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="w-full sm:w-[180px]">
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger>
                 <SelectValue placeholder="Status Filter" />
@@ -385,7 +387,7 @@ export function DefendantWatchView() {
               </SelectContent>
             </Select>
           </div>
-          <div className="w-[180px]">
+          <div className="w-full sm:w-[180px]">
             <Select value={riskFilter} onValueChange={setRiskFilter}>
               <SelectTrigger>
                 <SelectValue placeholder="Risk Filter" />
@@ -399,7 +401,7 @@ export function DefendantWatchView() {
               </SelectContent>
             </Select>
           </div>
-          <Button variant="outline" size="icon">
+          <Button variant="outline" size="icon" className="w-full sm:w-auto">
             <Filter className="h-4 w-4" />
           </Button>
         </div>
@@ -408,91 +410,99 @@ export function DefendantWatchView() {
       {/* Defendants Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Defendants Under Watch</CardTitle>
+          <CardTitle className="text-lg sm:text-xl">Defendants Under Watch</CardTitle>
           <CardDescription>{filteredDefendants.length} defendants found</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Last Check-in</TableHead>
-                <TableHead>Next Check-in</TableHead>
-                <TableHead>Risk Level</TableHead>
-                <TableHead>Court Date</TableHead>
-                <TableHead>Location</TableHead>
-                <TableHead>Alerts</TableHead>
-                <TableHead></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredDefendants.map((defendant) => (
-                <TableRow key={defendant.id} className="cursor-pointer" onClick={() => setSelectedDefendant(defendant)}>
-                  <TableCell className="font-medium">{defendant.id}</TableCell>
-                  <TableCell>{defendant.name}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={defendant.checkInStatus} />
-                  </TableCell>
-                  <TableCell>{defendant.lastCheckIn}</TableCell>
-                  <TableCell>{defendant.nextCheckIn}</TableCell>
-                  <TableCell>
-                    <RiskBadge level={defendant.riskLevel} />
-                  </TableCell>
-                  <TableCell>{defendant.courtDate}</TableCell>
-                  <TableCell>
-                    <LocationBadge status={defendant.location} />
-                  </TableCell>
-                  <TableCell>
-                    {defendant.alerts > 0 && <Badge className="bg-red-500 hover:bg-red-600">{defendant.alerts}</Badge>}
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => setSelectedDefendant(defendant)}>
-                          <Eye className="mr-2 h-4 w-4" />
-                          View Details
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Phone className="mr-2 h-4 w-4" />
-                          Contact Defendant
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <MapPin className="mr-2 h-4 w-4" />
-                          View Location
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <Bell className="mr-2 h-4 w-4" />
-                          Set Alert
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Settings className="mr-2 h-4 w-4" />
-                          Manage Monitoring
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="min-w-[80px]">ID</TableHead>
+                  <TableHead className="min-w-[120px]">Name</TableHead>
+                  <TableHead className="min-w-[100px]">Status</TableHead>
+                  <TableHead className="min-w-[140px]">Last Check-in</TableHead>
+                  <TableHead className="min-w-[140px]">Next Check-in</TableHead>
+                  <TableHead className="min-w-[80px]">Risk Level</TableHead>
+                  <TableHead className="min-w-[100px]">Court Date</TableHead>
+                  <TableHead className="min-w-[120px]">Location</TableHead>
+                  <TableHead className="min-w-[60px]">Alerts</TableHead>
+                  <TableHead className="w-[50px]"></TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filteredDefendants.map((defendant) => (
+                  <TableRow
+                    key={defendant.id}
+                    className="cursor-pointer"
+                    onClick={() => setSelectedDefendant(defendant)}
+                  >
+                    <TableCell className="font-medium text-xs sm:text-sm">{defendant.id}</TableCell>
+                    <TableCell className="text-xs sm:text-sm">{defendant.name}</TableCell>
+                    <TableCell>
+                      <StatusBadge status={defendant.checkInStatus} />
+                    </TableCell>
+                    <TableCell className="text-xs sm:text-sm">{defendant.lastCheckIn}</TableCell>
+                    <TableCell className="text-xs sm:text-sm">{defendant.nextCheckIn}</TableCell>
+                    <TableCell>
+                      <RiskBadge level={defendant.riskLevel} />
+                    </TableCell>
+                    <TableCell className="text-xs sm:text-sm">{defendant.courtDate}</TableCell>
+                    <TableCell>
+                      <LocationBadge status={defendant.location} />
+                    </TableCell>
+                    <TableCell>
+                      {defendant.alerts > 0 && (
+                        <Badge className="bg-red-500 hover:bg-red-600 text-xs">{defendant.alerts}</Badge>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-6 w-6 sm:h-8 sm:w-8 p-0">
+                            <MoreHorizontal className="h-3 w-3 sm:h-4 sm:w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuItem onClick={() => setSelectedDefendant(defendant)}>
+                            <Eye className="mr-2 h-4 w-4" />
+                            View Details
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Phone className="mr-2 h-4 w-4" />
+                            Contact Defendant
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <MapPin className="mr-2 h-4 w-4" />
+                            View Location
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem>
+                            <Bell className="mr-2 h-4 w-4" />
+                            Set Alert
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Settings className="mr-2 h-4 w-4" />
+                            Manage Monitoring
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
 
       {/* Defendant Details Modal */}
       {selectedDefendant && (
-        <Card className="mt-6">
-          <CardHeader className="flex flex-row items-center justify-between">
+        <Card className="mt-4 sm:mt-6">
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
             <div>
-              <CardTitle>Defendant Details</CardTitle>
+              <CardTitle className="text-lg sm:text-xl">Defendant Details</CardTitle>
               <CardDescription>
                 {selectedDefendant.id} - {selectedDefendant.name}
               </CardDescription>
@@ -503,88 +513,96 @@ export function DefendantWatchView() {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="overview">
-              <TabsList className="mb-4">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="check-ins">Check-ins</TabsTrigger>
-                <TabsTrigger value="location">Location</TabsTrigger>
-                <TabsTrigger value="alerts">Alerts</TabsTrigger>
+              <TabsList className="mb-4 grid w-full grid-cols-2 sm:grid-cols-4">
+                <TabsTrigger value="overview" className="text-xs sm:text-sm">
+                  Overview
+                </TabsTrigger>
+                <TabsTrigger value="check-ins" className="text-xs sm:text-sm">
+                  Check-ins
+                </TabsTrigger>
+                <TabsTrigger value="location" className="text-xs sm:text-sm">
+                  Location
+                </TabsTrigger>
+                <TabsTrigger value="alerts" className="text-xs sm:text-sm">
+                  Alerts
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="overview">
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
                   <div className="space-y-4">
                     <div>
-                      <h4 className="mb-2 font-medium">Personal Information</h4>
-                      <div className="grid grid-cols-2 gap-2 rounded-lg border p-3">
-                        <div className="text-sm font-medium">Name:</div>
-                        <div className="text-sm">{selectedDefendant.name}</div>
-                        <div className="text-sm font-medium">Phone:</div>
-                        <div className="text-sm">{selectedDefendant.phone}</div>
-                        <div className="text-sm font-medium">Address:</div>
-                        <div className="text-sm">{selectedDefendant.address}</div>
+                      <h4 className="mb-2 font-medium text-sm sm:text-base">Personal Information</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 rounded-lg border p-3">
+                        <div className="text-xs sm:text-sm font-medium">Name:</div>
+                        <div className="text-xs sm:text-sm">{selectedDefendant.name}</div>
+                        <div className="text-xs sm:text-sm font-medium">Phone:</div>
+                        <div className="text-xs sm:text-sm">{selectedDefendant.phone}</div>
+                        <div className="text-xs sm:text-sm font-medium">Address:</div>
+                        <div className="text-xs sm:text-sm">{selectedDefendant.address}</div>
                       </div>
                     </div>
 
                     <div>
-                      <h4 className="mb-2 font-medium">Case Information</h4>
-                      <div className="grid grid-cols-2 gap-2 rounded-lg border p-3">
-                        <div className="text-sm font-medium">Case Number:</div>
-                        <div className="text-sm">{selectedDefendant.caseNumber}</div>
-                        <div className="text-sm font-medium">Bond Amount:</div>
-                        <div className="text-sm">{selectedDefendant.bondAmount}</div>
-                        <div className="text-sm font-medium">Court Date:</div>
-                        <div className="text-sm">{selectedDefendant.courtDate}</div>
-                        <div className="text-sm font-medium">Bondsman:</div>
-                        <div className="text-sm">{selectedDefendant.bondsman}</div>
+                      <h4 className="mb-2 font-medium text-sm sm:text-base">Case Information</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 rounded-lg border p-3">
+                        <div className="text-xs sm:text-sm font-medium">Case Number:</div>
+                        <div className="text-xs sm:text-sm">{selectedDefendant.caseNumber}</div>
+                        <div className="text-xs sm:text-sm font-medium">Bond Amount:</div>
+                        <div className="text-xs sm:text-sm">{selectedDefendant.bondAmount}</div>
+                        <div className="text-xs sm:text-sm font-medium">Court Date:</div>
+                        <div className="text-xs sm:text-sm">{selectedDefendant.courtDate}</div>
+                        <div className="text-xs sm:text-sm font-medium">Bondsman:</div>
+                        <div className="text-xs sm:text-sm">{selectedDefendant.bondsman}</div>
                       </div>
                     </div>
                   </div>
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="mb-2 font-medium">Monitoring Status</h4>
-                      <div className="grid grid-cols-2 gap-2 rounded-lg border p-3">
-                        <div className="text-sm font-medium">Check-in Status:</div>
-                        <div className="text-sm">
+                      <h4 className="mb-2 font-medium text-sm sm:text-base">Monitoring Status</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 rounded-lg border p-3">
+                        <div className="text-xs sm:text-sm font-medium">Check-in Status:</div>
+                        <div className="text-xs sm:text-sm">
                           <StatusBadge status={selectedDefendant.checkInStatus} />
                         </div>
-                        <div className="text-sm font-medium">Risk Level:</div>
-                        <div className="text-sm">
+                        <div className="text-xs sm:text-sm font-medium">Risk Level:</div>
+                        <div className="text-xs sm:text-sm">
                           <RiskBadge level={selectedDefendant.riskLevel} />
                         </div>
-                        <div className="text-sm font-medium">Last Check-in:</div>
-                        <div className="text-sm">{selectedDefendant.lastCheckIn}</div>
-                        <div className="text-sm font-medium">Next Check-in:</div>
-                        <div className="text-sm">{selectedDefendant.nextCheckIn}</div>
-                        <div className="text-sm font-medium">Check-in Method:</div>
-                        <div className="text-sm">{selectedDefendant.checkInMethod}</div>
-                        <div className="text-sm font-medium">Check-in Frequency:</div>
-                        <div className="text-sm">{selectedDefendant.checkInFrequency}</div>
+                        <div className="text-xs sm:text-sm font-medium">Last Check-in:</div>
+                        <div className="text-xs sm:text-sm">{selectedDefendant.lastCheckIn}</div>
+                        <div className="text-xs sm:text-sm font-medium">Next Check-in:</div>
+                        <div className="text-xs sm:text-sm">{selectedDefendant.nextCheckIn}</div>
+                        <div className="text-xs sm:text-sm font-medium">Check-in Method:</div>
+                        <div className="text-xs sm:text-sm">{selectedDefendant.checkInMethod}</div>
+                        <div className="text-xs sm:text-sm font-medium">Check-in Frequency:</div>
+                        <div className="text-xs sm:text-sm">{selectedDefendant.checkInFrequency}</div>
                       </div>
                     </div>
 
                     <div>
-                      <h4 className="mb-2 font-medium">Location Status</h4>
-                      <div className="grid grid-cols-2 gap-2 rounded-lg border p-3">
-                        <div className="text-sm font-medium">Current Location:</div>
-                        <div className="text-sm">
+                      <h4 className="mb-2 font-medium text-sm sm:text-base">Location Status</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 rounded-lg border p-3">
+                        <div className="text-xs sm:text-sm font-medium">Current Location:</div>
+                        <div className="text-xs sm:text-sm">
                           <LocationBadge status={selectedDefendant.location} />
                         </div>
-                        <div className="text-sm font-medium">Last Updated:</div>
-                        <div className="text-sm">Today, 2:30 PM</div>
+                        <div className="text-xs sm:text-sm font-medium">Last Updated:</div>
+                        <div className="text-xs sm:text-sm">Today, 2:30 PM</div>
                       </div>
                     </div>
 
-                    <div className="flex justify-end gap-2">
-                      <Button variant="outline" size="sm">
+                    <div className="flex flex-col sm:flex-row justify-end gap-2">
+                      <Button variant="outline" size="sm" className="w-full sm:w-auto">
                         <Phone className="mr-2 h-4 w-4" />
                         Contact
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" className="w-full sm:w-auto">
                         <MapPin className="mr-2 h-4 w-4" />
                         Track
                       </Button>
-                      <Button size="sm">
+                      <Button size="sm" className="w-full sm:w-auto">
                         <Bell className="mr-2 h-4 w-4" />
                         Set Alert
                       </Button>
@@ -595,52 +613,54 @@ export function DefendantWatchView() {
 
               <TabsContent value="check-ins">
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-medium">Check-in History</h4>
-                    <Button variant="outline" size="sm">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <h4 className="font-medium text-sm sm:text-base">Check-in History</h4>
+                    <Button variant="outline" size="sm" className="w-full sm:w-auto">
                       <Calendar className="mr-2 h-4 w-4" />
                       Schedule Check-in
                     </Button>
                   </div>
 
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Time</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Method</TableHead>
-                        <TableHead>Notes</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {selectedDefendant.checkInHistory.map((checkIn, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{checkIn.date}</TableCell>
-                          <TableCell>{checkIn.time}</TableCell>
-                          <TableCell>
-                            {checkIn.status === "Completed" ? (
-                              <Badge className="bg-green-500 hover:bg-green-600">Completed</Badge>
-                            ) : checkIn.status === "Late" ? (
-                              <Badge className="bg-yellow-500 hover:bg-yellow-600">Late</Badge>
-                            ) : (
-                              <Badge className="bg-red-500 hover:bg-red-600">Missed</Badge>
-                            )}
-                          </TableCell>
-                          <TableCell>{checkIn.method}</TableCell>
-                          <TableCell>-</TableCell>
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="min-w-[100px]">Date</TableHead>
+                          <TableHead className="min-w-[80px]">Time</TableHead>
+                          <TableHead className="min-w-[100px]">Status</TableHead>
+                          <TableHead className="min-w-[80px]">Method</TableHead>
+                          <TableHead className="min-w-[80px]">Notes</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {selectedDefendant.checkInHistory.map((checkIn, index) => (
+                          <TableRow key={index}>
+                            <TableCell className="text-xs sm:text-sm">{checkIn.date}</TableCell>
+                            <TableCell className="text-xs sm:text-sm">{checkIn.time}</TableCell>
+                            <TableCell>
+                              {checkIn.status === "Completed" ? (
+                                <Badge className="bg-green-500 hover:bg-green-600 text-xs">Completed</Badge>
+                              ) : checkIn.status === "Late" ? (
+                                <Badge className="bg-yellow-500 hover:bg-yellow-600 text-xs">Late</Badge>
+                              ) : (
+                                <Badge className="bg-red-500 hover:bg-red-600 text-xs">Missed</Badge>
+                              )}
+                            </TableCell>
+                            <TableCell className="text-xs sm:text-sm">{checkIn.method}</TableCell>
+                            <TableCell className="text-xs sm:text-sm">-</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
                 </div>
               </TabsContent>
 
               <TabsContent value="location">
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-medium">Location History</h4>
-                    <Button variant="outline" size="sm">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <h4 className="font-medium text-sm sm:text-base">Location History</h4>
+                    <Button variant="outline" size="sm" className="w-full sm:w-auto">
                       <MapPin className="mr-2 h-4 w-4" />
                       View Live Location
                     </Button>
@@ -649,41 +669,43 @@ export function DefendantWatchView() {
                   <div className="rounded-lg border bg-muted/40 p-2">
                     <div className="aspect-video rounded-md bg-muted">
                       <div className="flex h-full items-center justify-center">
-                        <p className="text-sm text-muted-foreground">Map view would be displayed here</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground">Map view would be displayed here</p>
                       </div>
                     </div>
                   </div>
 
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Time</TableHead>
-                        <TableHead>Location</TableHead>
-                        <TableHead>Status</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {selectedDefendant.locationHistory.map((location, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{location.date}</TableCell>
-                          <TableCell>{location.time}</TableCell>
-                          <TableCell>{location.location}</TableCell>
-                          <TableCell>
-                            <LocationBadge status={location.status} />
-                          </TableCell>
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="min-w-[100px]">Date</TableHead>
+                          <TableHead className="min-w-[80px]">Time</TableHead>
+                          <TableHead className="min-w-[100px]">Location</TableHead>
+                          <TableHead className="min-w-[120px]">Status</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {selectedDefendant.locationHistory.map((location, index) => (
+                          <TableRow key={index}>
+                            <TableCell className="text-xs sm:text-sm">{location.date}</TableCell>
+                            <TableCell className="text-xs sm:text-sm">{location.time}</TableCell>
+                            <TableCell className="text-xs sm:text-sm">{location.location}</TableCell>
+                            <TableCell>
+                              <LocationBadge status={location.status} />
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
                 </div>
               </TabsContent>
 
               <TabsContent value="alerts">
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-medium">Alert Settings</h4>
-                    <Button size="sm">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <h4 className="font-medium text-sm sm:text-base">Alert Settings</h4>
+                    <Button size="sm" className="w-full sm:w-auto">
                       <Plus className="mr-2 h-4 w-4" />
                       New Alert
                     </Button>
@@ -691,41 +713,45 @@ export function DefendantWatchView() {
 
                   <div className="rounded-lg border p-4">
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div>
-                          <h5 className="font-medium">Missed Check-in Alert</h5>
-                          <p className="text-sm text-muted-foreground">
+                          <h5 className="font-medium text-sm sm:text-base">Missed Check-in Alert</h5>
+                          <p className="text-xs sm:text-sm text-muted-foreground">
                             Notify when defendant misses a scheduled check-in
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Badge>Active</Badge>
+                          <Badge className="text-xs">Active</Badge>
                           <Button variant="ghost" size="sm">
                             <Settings className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div>
-                          <h5 className="font-medium">Geo-fence Alert</h5>
-                          <p className="text-sm text-muted-foreground">Notify when defendant leaves allowed area</p>
+                          <h5 className="font-medium text-sm sm:text-base">Geo-fence Alert</h5>
+                          <p className="text-xs sm:text-sm text-muted-foreground">
+                            Notify when defendant leaves allowed area
+                          </p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Badge>Active</Badge>
+                          <Badge className="text-xs">Active</Badge>
                           <Button variant="ghost" size="sm">
                             <Settings className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div>
-                          <h5 className="font-medium">Court Date Reminder</h5>
-                          <p className="text-sm text-muted-foreground">Send reminder 48 hours before court date</p>
+                          <h5 className="font-medium text-sm sm:text-base">Court Date Reminder</h5>
+                          <p className="text-xs sm:text-sm text-muted-foreground">
+                            Send reminder 48 hours before court date
+                          </p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Badge>Active</Badge>
+                          <Badge className="text-xs">Active</Badge>
                           <Button variant="ghost" size="sm">
                             <Settings className="h-4 w-4" />
                           </Button>
@@ -735,88 +761,90 @@ export function DefendantWatchView() {
                   </div>
 
                   <div>
-                    <h4 className="mb-2 font-medium">Alert History</h4>
+                    <h4 className="mb-2 font-medium text-sm sm:text-base">Alert History</h4>
                     {selectedDefendant.alerts > 0 ? (
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Date</TableHead>
-                            <TableHead>Time</TableHead>
-                            <TableHead>Type</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Action Taken</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {selectedDefendant.id === "DEF-1002" && (
-                            <>
-                              <TableRow>
-                                <TableCell>Jun 9, 2025</TableCell>
-                                <TableCell>10:15 AM</TableCell>
-                                <TableCell>Missed Check-in</TableCell>
-                                <TableCell>
-                                  <Badge className="bg-red-500 hover:bg-red-600">Active</Badge>
-                                </TableCell>
-                                <TableCell>Phone call attempted</TableCell>
-                              </TableRow>
-                              <TableRow>
-                                <TableCell>Jun 8, 2025</TableCell>
-                                <TableCell>8:30 PM</TableCell>
-                                <TableCell>Geo-fence Violation</TableCell>
-                                <TableCell>
-                                  <Badge className="bg-red-500 hover:bg-red-600">Active</Badge>
-                                </TableCell>
-                                <TableCell>None</TableCell>
-                              </TableRow>
-                            </>
-                          )}
-                          {selectedDefendant.id === "DEF-1003" && (
+                      <div className="overflow-x-auto">
+                        <Table>
+                          <TableHeader>
                             <TableRow>
-                              <TableCell>Jun 9, 2025</TableCell>
-                              <TableCell>5:45 PM</TableCell>
-                              <TableCell>Late Check-in</TableCell>
-                              <TableCell>
-                                <Badge className="bg-green-500 hover:bg-green-600">Resolved</Badge>
-                              </TableCell>
-                              <TableCell>Warning issued</TableCell>
+                              <TableHead className="min-w-[100px]">Date</TableHead>
+                              <TableHead className="min-w-[80px]">Time</TableHead>
+                              <TableHead className="min-w-[120px]">Type</TableHead>
+                              <TableHead className="min-w-[80px]">Status</TableHead>
+                              <TableHead className="min-w-[120px]">Action Taken</TableHead>
                             </TableRow>
-                          )}
-                          {selectedDefendant.id === "DEF-1005" && (
-                            <>
+                          </TableHeader>
+                          <TableBody>
+                            {selectedDefendant.id === "DEF-1002" && (
+                              <>
+                                <TableRow>
+                                  <TableCell className="text-xs sm:text-sm">Jun 9, 2025</TableCell>
+                                  <TableCell className="text-xs sm:text-sm">10:15 AM</TableCell>
+                                  <TableCell className="text-xs sm:text-sm">Missed Check-in</TableCell>
+                                  <TableCell>
+                                    <Badge className="bg-red-500 hover:bg-red-600 text-xs">Active</Badge>
+                                  </TableCell>
+                                  <TableCell className="text-xs sm:text-sm">Phone call attempted</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                  <TableCell className="text-xs sm:text-sm">Jun 8, 2025</TableCell>
+                                  <TableCell className="text-xs sm:text-sm">8:30 PM</TableCell>
+                                  <TableCell className="text-xs sm:text-sm">Geo-fence Violation</TableCell>
+                                  <TableCell>
+                                    <Badge className="bg-red-500 hover:bg-red-600 text-xs">Active</Badge>
+                                  </TableCell>
+                                  <TableCell className="text-xs sm:text-sm">None</TableCell>
+                                </TableRow>
+                              </>
+                            )}
+                            {selectedDefendant.id === "DEF-1003" && (
                               <TableRow>
-                                <TableCell>Jun 6, 2025</TableCell>
-                                <TableCell>3:00 PM</TableCell>
-                                <TableCell>Missed Check-in</TableCell>
+                                <TableCell className="text-xs sm:text-sm">Jun 9, 2025</TableCell>
+                                <TableCell className="text-xs sm:text-sm">5:45 PM</TableCell>
+                                <TableCell className="text-xs sm:text-sm">Late Check-in</TableCell>
                                 <TableCell>
-                                  <Badge className="bg-red-500 hover:bg-red-600">Active</Badge>
+                                  <Badge className="bg-green-500 hover:bg-green-600 text-xs">Resolved</Badge>
                                 </TableCell>
-                                <TableCell>Warrant requested</TableCell>
+                                <TableCell className="text-xs sm:text-sm">Warning issued</TableCell>
                               </TableRow>
-                              <TableRow>
-                                <TableCell>Jun 5, 2025</TableCell>
-                                <TableCell>8:30 PM</TableCell>
-                                <TableCell>Geo-fence Violation</TableCell>
-                                <TableCell>
-                                  <Badge className="bg-red-500 hover:bg-red-600">Active</Badge>
-                                </TableCell>
-                                <TableCell>Bondsman notified</TableCell>
-                              </TableRow>
-                              <TableRow>
-                                <TableCell>Jun 3, 2025</TableCell>
-                                <TableCell>3:00 PM</TableCell>
-                                <TableCell>Missed Check-in</TableCell>
-                                <TableCell>
-                                  <Badge className="bg-red-500 hover:bg-red-600">Active</Badge>
-                                </TableCell>
-                                <TableCell>Phone call attempted</TableCell>
-                              </TableRow>
-                            </>
-                          )}
-                        </TableBody>
-                      </Table>
+                            )}
+                            {selectedDefendant.id === "DEF-1005" && (
+                              <>
+                                <TableRow>
+                                  <TableCell className="text-xs sm:text-sm">Jun 6, 2025</TableCell>
+                                  <TableCell className="text-xs sm:text-sm">3:00 PM</TableCell>
+                                  <TableCell className="text-xs sm:text-sm">Missed Check-in</TableCell>
+                                  <TableCell>
+                                    <Badge className="bg-red-500 hover:bg-red-600 text-xs">Active</Badge>
+                                  </TableCell>
+                                  <TableCell className="text-xs sm:text-sm">Warrant requested</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                  <TableCell className="text-xs sm:text-sm">Jun 5, 2025</TableCell>
+                                  <TableCell className="text-xs sm:text-sm">8:30 PM</TableCell>
+                                  <TableCell className="text-xs sm:text-sm">Geo-fence Violation</TableCell>
+                                  <TableCell>
+                                    <Badge className="bg-red-500 hover:bg-red-600 text-xs">Active</Badge>
+                                  </TableCell>
+                                  <TableCell className="text-xs sm:text-sm">Bondsman notified</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                  <TableCell className="text-xs sm:text-sm">Jun 3, 2025</TableCell>
+                                  <TableCell className="text-xs sm:text-sm">3:00 PM</TableCell>
+                                  <TableCell className="text-xs sm:text-sm">Missed Check-in</TableCell>
+                                  <TableCell>
+                                    <Badge className="bg-red-500 hover:bg-red-600 text-xs">Active</Badge>
+                                  </TableCell>
+                                  <TableCell className="text-xs sm:text-sm">Phone call attempted</TableCell>
+                                </TableRow>
+                              </>
+                            )}
+                          </TableBody>
+                        </Table>
+                      </div>
                     ) : (
                       <div className="rounded-lg border p-8 text-center">
-                        <p className="text-muted-foreground">No alerts for this defendant</p>
+                        <p className="text-muted-foreground text-xs sm:text-sm">No alerts for this defendant</p>
                       </div>
                     )}
                   </div>
@@ -824,16 +852,16 @@ export function DefendantWatchView() {
               </TabsContent>
             </Tabs>
           </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={() => setSelectedDefendant(null)}>
+          <CardFooter className="flex flex-col sm:flex-row justify-between gap-3">
+            <Button variant="outline" onClick={() => setSelectedDefendant(null)} className="w-full sm:w-auto">
               Close
             </Button>
-            <div className="flex gap-2">
-              <Button variant="outline">
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <Button variant="outline" className="w-full sm:w-auto">
                 <Phone className="mr-2 h-4 w-4" />
                 Contact
               </Button>
-              <Button>
+              <Button className="w-full sm:w-auto">
                 <Settings className="mr-2 h-4 w-4" />
                 Manage
               </Button>
