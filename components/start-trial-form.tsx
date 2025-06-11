@@ -74,7 +74,11 @@ export function StartTrialForm() {
       }
       
       console.log("Supabase user created:", authData)
-      setSuccessMessage("Your account has been created and your 7-day trial has started! You can now sign in.")
+      setSuccessMessage("Your account has been created and your 7-day trial has started! Redirecting to sign in...")
+      // Redirect to sign-in page after a short delay to allow user to read the success message
+      setTimeout(() => {
+        window.location.href = "/signin";
+      }, 2000);
     } catch (err: any) {
       console.error("Error processing signup:", err)
       setError(err.message || "An unexpected error occurred during sign-up. Please try again or contact support.")
