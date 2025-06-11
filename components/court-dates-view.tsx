@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -7,13 +8,38 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Calendar, Plus } from "lucide-react"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
+import { supabase } from "@/lib/supabaseClient"
+import { CourtDateModal } from "./modals/court-date-modal"
 
 export function CourtDatesView() {
+  const [courtDates, setCourtDates] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [courtDateModalOpen, setCourtDateModalOpen] = useState(false)
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
+
+  const refreshCourtDates = () => {
+    setRefreshTrigger(prev => prev + 1);
+  }
+
+  useEffect(() => {
+    const fetchCourtDates = async () => {
+      setIsLoading(true)
+      const { data, error } = await supabase.from('court_dates').select('*')
+      if (error) {
+        console.error("Error fetching court dates:", error)
+      } else {
+        setCourtDates(data || [])
+      }
+      setIsLoading(false)
+    }
+    fetchCourtDates()
+  }, [refreshTrigger])
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Court Date Docket</h1>
-        <Button>
+        <Button onClick={() => setCourtDateModalOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
           Add Court Date
         </Button>
@@ -126,15 +152,40 @@ export function CourtDatesView() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell colSpan={7} className="text-center py-10 text-muted-foreground">
-                  No information found.
-                </TableCell>
-              </TableRow>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-10 text-muted-foreground">
+                    Loading...
+                  </TableCell>
+                </TableRow>
+              ) : courtDates.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-10 text-muted-foreground">
+                    No information found.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                courtDates.map((date) => (
+                  <TableRow key={date.id}>
+                    <TableCell></TableCell>
+                    <TableCell>{date.bond_amount} / {date.power_number}</TableCell>
+                    <TableCell>{date.court_name} / {date.court_date_time}</TableCell>
+                    <TableCell>{date.division} / {date.room} / {date.case_number}</TableCell>
+                    <TableCell>{date.defendant} / {date.charges}</TableCell>
+                    <TableCell>{date.home_phone} / {date.mobile_phone}</TableCell>
+                    <TableCell>
+                      <Button variant="ghost" size="icon">
+                        <Calendar className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
+      <CourtDateModal open={courtDateModalOpen} onOpenChange={setCourtDateModalOpen} onCourtDateAdded={refreshCourtDates} />
     </div>
   )
 }

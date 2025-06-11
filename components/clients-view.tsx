@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -26,121 +26,12 @@ import {
   TrendingUp,
   UserCheck,
 } from "lucide-react"
+import { supabase } from "@/lib/supabaseClient"
+import { ClientModal } from "./modals/client-modal"
 
-// Sample clients data
-const clientsData = [
-  {
-    id: "1",
-    name: "1e1, D1r",
-    birthDate: "12/12/2000",
-    phone: "",
-    activeBonds: 1,
-    allBonds: 1,
-    dateAdded: "06/15/2024",
-    fta: 0,
-    lastPayment: "",
-    lastCheckIn: "",
-    nextPaymentDue: "N/A",
-    nextCourtDate: "",
-    balance: 1.0,
-    status: "active",
-    label: "none",
-    inCustody: false,
-    address: "123 Main St, City, State",
-    email: "client1@email.com",
-  },
-  {
-    id: "2",
-    name: "Aa, Dd",
-    birthDate: "12/12/2012",
-    phone: "626-598-7485",
-    activeBonds: 1,
-    allBonds: 1,
-    dateAdded: "01/07/2015",
-    fta: 0,
-    lastPayment: "02/12/2024",
-    lastCheckIn: "06/11/2024",
-    nextPaymentDue: "N/A",
-    nextCourtDate: "",
-    balance: -50.0,
-    status: "active",
-    label: "bad-address",
-    inCustody: false,
-    address: "456 Oak Ave, City, State",
-    email: "aa.dd@email.com",
-  },
-  {
-    id: "3",
-    name: "Aaaaaa, Jim5",
-    birthDate: "01/01/2020",
-    phone: "",
-    activeBonds: 1,
-    allBonds: 2,
-    dateAdded: "03/24/2020",
-    fta: 0,
-    lastPayment: "06/13/2023",
-    lastCheckIn: "",
-    nextPaymentDue: "N/A",
-    nextCourtDate: "",
-    balance: 0.0,
-    status: "active",
-    label: "supervised",
-    inCustody: false,
-    address: "789 Pine St, City, State",
-    email: "aaaaaa.jim5@email.com",
-  },
-  {
-    id: "4",
-    name: "Aasdasd, Aadassd",
-    birthDate: "08/22/1989",
-    phone: "919-307-3618",
-    activeBonds: 2,
-    allBonds: 2,
-    dateAdded: "06/20/2013",
-    fta: 0,
-    lastPayment: "11/04/2022",
-    lastCheckIn: "07/11/2023",
-    nextPaymentDue: "N/A",
-    nextCourtDate: "",
-    balance: -600.0,
-    status: "active",
-    label: "escrow-payment",
-    inCustody: true,
-    address: "321 Elm St, City, State",
-    email: "aasdasd.aadassd@email.com",
-  },
-  {
-    id: "5",
-    name: "ABE, AB A",
-    birthDate: "12/12/1983",
-    phone: "406-533-6555",
-    activeBonds: 2,
-    allBonds: 6,
-    dateAdded: "02/16/2012",
-    fta: 2,
-    lastPayment: "09/11/2013",
-    lastCheckIn: "04/16/2025",
-    nextPaymentDue: "N/A",
-    nextCourtDate: "",
-    balance: 0.0,
-    status: "active",
-    label: "gps",
-    inCustody: false,
-    address: "654 Maple Dr, City, State",
-    email: "abe.aba@email.com",
-  },
-]
-
-const recentClients = [
-  "SMITH, HAROLD",
-  "JOHNSON, MARY",
-  "WILLIAMS, ROBERT",
-  "BROWN, PATRICIA",
-  "JONES, MICHAEL",
-  "GARCIA, LINDA",
-  "MILLER, WILLIAM",
-  "DAVIS, ELIZABETH",
-]
+// Sample clients data - will be replaced by Supabase data
+const clientsData: any[] = [];
+const recentClients: string[] = [];
 
 export function ClientsView() {
   const [selectedClients, setSelectedClients] = useState<string[]>([])
@@ -148,13 +39,35 @@ export function ClientsView() {
   const [showCustody, setShowCustody] = useState(false)
   const [selectedLabel, setSelectedLabel] = useState("all")
   const [clientFilter, setClientFilter] = useState("all")
+  const [clients, setClients] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [clientModalOpen, setClientModalOpen] = useState(false)
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
+
+  const refreshClients = () => {
+    setRefreshTrigger(prev => prev + 1);
+  }
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      setIsLoading(true)
+      const { data, error } = await supabase.from('clients').select('*')
+      if (error) {
+        console.error("Error fetching clients:", error)
+      } else {
+        setClients(data || [])
+      }
+      setIsLoading(false)
+    }
+    fetchClients()
+  }, [refreshTrigger])
 
   const handleSelectClient = (clientId: string) => {
     setSelectedClients((prev) => (prev.includes(clientId) ? prev.filter((id) => id !== clientId) : [...prev, clientId]))
   }
 
   const handleSelectAll = () => {
-    setSelectedClients(selectedClients.length === clientsData.length ? [] : clientsData.map((client) => client.id))
+    setSelectedClients(selectedClients.length === clients.length ? [] : clients.map((client) => client.id))
   }
 
   const formatCurrency = (amount: number) => {
@@ -191,12 +104,12 @@ export function ClientsView() {
     }
   }
 
-  const totalClients = clientsData.length
-  const activeClients = clientsData.filter((client) => client.status === "active").length
-  const inCustodyCount = clientsData.filter((client) => client.inCustody).length
-  const totalBalance = clientsData.reduce((sum, client) => sum + client.balance, 0)
+  const totalClients = clients.length
+  const activeClients = clients.filter((client) => client.status === "active").length
+  const inCustodyCount = clients.filter((client) => client.inCustody).length
+  const totalBalance = clients.reduce((sum, client) => sum + client.balance, 0)
 
-  const filteredClients = clientsData.filter((client) => {
+  const filteredClients = clients.filter((client) => {
     const matchesSearch =
       client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       client.phone.includes(searchTerm) ||
@@ -216,7 +129,7 @@ export function ClientsView() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Clients Management</h1>
         <div className="flex flex-col sm:flex-row gap-2">
-          <Button className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto" onClick={() => setClientModalOpen(true)}>
             <UserPlus className="mr-2 h-4 w-4" />
             New Client
           </Button>
@@ -289,7 +202,7 @@ export function ClientsView() {
                 <p className="text-xs sm:text-sm font-medium text-muted-foreground">FTA Count</p>
                 <div className="flex items-baseline gap-1">
                   <h3 className="text-xl sm:text-2xl font-bold">
-                    {clientsData.reduce((sum, client) => sum + client.fta, 0)}
+                    {clients.reduce((sum, client) => sum + client.fta, 0)}
                   </h3>
                   <p className="text-xs text-muted-foreground">Total</p>
                 </div>
@@ -669,6 +582,7 @@ export function ClientsView() {
           </Tabs>
         </div>
       </div>
+      <ClientModal open={clientModalOpen} onOpenChange={setClientModalOpen} onClientAdded={refreshClients} />
     </div>
   )
 }

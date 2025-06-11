@@ -1,8 +1,9 @@
 "use client"
 
-import type React from "react"
-
 import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Dialog,
   DialogContent,
@@ -11,171 +12,124 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
+import { supabase } from "@/lib/supabaseClient"
 
 interface CourtDateModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  onCourtDateAdded: () => void
 }
 
-export function CourtDateModal({ open, onOpenChange }: CourtDateModalProps) {
+export function CourtDateModal({ open, onOpenChange, onCourtDateAdded }: CourtDateModalProps) {
   const [formData, setFormData] = useState({
-    clientName: "",
-    bondNumber: "",
-    courtDate: "",
-    courtTime: "",
-    courtroom: "",
-    judge: "",
-    hearingType: "",
-    notes: "",
+    bond_amount: "",
+    power_number: "",
+    court_name: "",
+    court_date_time: "",
+    division: "",
+    room: "",
+    case_number: "",
+    defendant: "",
+    charges: "",
+    home_phone: "",
+    mobile_phone: "",
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Court date submitted:", formData)
-    onOpenChange(false)
-    setFormData({
-      clientName: "",
-      bondNumber: "",
-      courtDate: "",
-      courtTime: "",
-      courtroom: "",
-      judge: "",
-      hearingType: "",
-      notes: "",
-    })
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmit = async () => {
+    const { error } = await supabase.from("court_dates").insert([formData])
+    if (error) {
+      console.error("Error adding court date:", error)
+    } else {
+      onCourtDateAdded()
+      onOpenChange(false)
+    }
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Court Date</DialogTitle>
-          <DialogDescription>Schedule a new court date for a client.</DialogDescription>
+          <DialogTitle>Add New Court Date</DialogTitle>
+          <DialogDescription>
+            Enter the court date information below. Click save when you're done.
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="clientName" className="text-right">
-                Client
-              </Label>
-              <Input
-                id="clientName"
-                value={formData.clientName}
-                onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
-                className="col-span-3"
-                placeholder="Client name"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="bondNumber" className="text-right">
-                Bond #
-              </Label>
-              <Input
-                id="bondNumber"
-                value={formData.bondNumber}
-                onChange={(e) => setFormData({ ...formData, bondNumber: e.target.value })}
-                className="col-span-3"
-                placeholder="Bond number"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="courtDate" className="text-right">
-                Date
-              </Label>
-              <Input
-                id="courtDate"
-                type="date"
-                value={formData.courtDate}
-                onChange={(e) => setFormData({ ...formData, courtDate: e.target.value })}
-                className="col-span-3"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="courtTime" className="text-right">
-                Time
-              </Label>
-              <Input
-                id="courtTime"
-                type="time"
-                value={formData.courtTime}
-                onChange={(e) => setFormData({ ...formData, courtTime: e.target.value })}
-                className="col-span-3"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="courtroom" className="text-right">
-                Courtroom
-              </Label>
-              <Input
-                id="courtroom"
-                value={formData.courtroom}
-                onChange={(e) => setFormData({ ...formData, courtroom: e.target.value })}
-                className="col-span-3"
-                placeholder="Courtroom number"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="judge" className="text-right">
-                Judge
-              </Label>
-              <Input
-                id="judge"
-                value={formData.judge}
-                onChange={(e) => setFormData({ ...formData, judge: e.target.value })}
-                className="col-span-3"
-                placeholder="Judge name"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="hearingType" className="text-right">
-                Hearing Type
-              </Label>
-              <Select
-                value={formData.hearingType}
-                onValueChange={(value) => setFormData({ ...formData, hearingType: value })}
-              >
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Select hearing type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="arraignment">Arraignment</SelectItem>
-                  <SelectItem value="preliminary">Preliminary Hearing</SelectItem>
-                  <SelectItem value="trial">Trial</SelectItem>
-                  <SelectItem value="sentencing">Sentencing</SelectItem>
-                  <SelectItem value="review">Review Hearing</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="notes" className="text-right">
-                Notes
-              </Label>
-              <Textarea
-                id="notes"
-                value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                className="col-span-3"
-                placeholder="Optional notes"
-              />
-            </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="bond_amount" className="text-right">
+              Bond Amount
+            </Label>
+            <Input id="bond_amount" name="bond_amount" value={formData.bond_amount} onChange={handleInputChange} className="col-span-3" />
           </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button type="submit">Add Court Date</Button>
-          </DialogFooter>
-        </form>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="power_number" className="text-right">
+              Power Number
+            </Label>
+            <Input id="power_number" name="power_number" value={formData.power_number} onChange={handleInputChange} className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="court_name" className="text-right">
+              Court Name
+            </Label>
+            <Input id="court_name" name="court_name" value={formData.court_name} onChange={handleInputChange} className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="court_date_time" className="text-right">
+              Date/Time
+            </Label>
+            <Input id="court_date_time" name="court_date_time" value={formData.court_date_time} onChange={handleInputChange} className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="division" className="text-right">
+              Division
+            </Label>
+            <Input id="division" name="division" value={formData.division} onChange={handleInputChange} className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="room" className="text-right">
+              Room
+            </Label>
+            <Input id="room" name="room" value={formData.room} onChange={handleInputChange} className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="case_number" className="text-right">
+              Case Number
+            </Label>
+            <Input id="case_number" name="case_number" value={formData.case_number} onChange={handleInputChange} className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="defendant" className="text-right">
+              Defendant
+            </Label>
+            <Input id="defendant" name="defendant" value={formData.defendant} onChange={handleInputChange} className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="charges" className="text-right">
+              Charges
+            </Label>
+            <Input id="charges" name="charges" value={formData.charges} onChange={handleInputChange} className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="home_phone" className="text-right">
+              Home Phone
+            </Label>
+            <Input id="home_phone" name="home_phone" value={formData.home_phone} onChange={handleInputChange} className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="mobile_phone" className="text-right">
+              Mobile Phone
+            </Label>
+            <Input id="mobile_phone" name="mobile_phone" value={formData.mobile_phone} onChange={handleInputChange} className="col-span-3" />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit" onClick={handleSubmit}>Save Court Date</Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

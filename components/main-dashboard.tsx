@@ -22,6 +22,11 @@ export function MainDashboard() {
   const [officeChatMessages, setOfficeChatMessages] = useState(0)
   const [attachmentsToday, setAttachmentsToday] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
+
+  const refreshDashboard = () => {
+    setRefreshTrigger(prev => prev + 1);
+  }
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -88,7 +93,7 @@ export function MainDashboard() {
     }
 
     fetchDashboardData()
-  }, [])
+  }, [refreshTrigger])
 
   return (
     <>
@@ -252,7 +257,7 @@ export function MainDashboard() {
         </div>
       </div>
 
-      <BondModal open={bondModalOpen} onOpenChange={setBondModalOpen} />
+      <BondModal open={bondModalOpen} onOpenChange={setBondModalOpen} onBondAdded={refreshDashboard} />
     </>
   )
 }
