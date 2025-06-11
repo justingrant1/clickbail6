@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
+import { supabase } from "@/lib/supabaseClient"
 
 export function StartTrialForm() {
   const [formData, setFormData] = useState({
@@ -30,10 +31,75 @@ export function StartTrialForm() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission
-    console.log("Form submitted:", formData)
+    setIsLoading(true)
+    setError(null)
+    
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match")
+      setIsLoading(false)
+      return
+    }
+    
+    try {
+      // In a real implementation, we'd use Stripe.js to securely collect card details
+      // and get a payment method ID, but for this demo we'll simulate that
+      const paymentMethodId = "pm_simulated_" + Math.random().toString(36).substring(2, 15)
+      
+      // Create customer and subscription via our API endpoint
+      const response = await fetch("/api/create-subscription", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customerData: {
+            name: `${formData.firstName} ${formData.lastName}`,
+            email: formData.email,
+          },
+          paymentMethodId,
+        }),
+      })
+      
+      const data = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to process payment")
+      }
+      
+      // Create user in Supabase
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            company: formData.company,
+            phone: formData.phone,
+            stripe_customer_id: data.customerId,
+            subscription_status: 'trialing'
+          }
+        }
+      })
+      
+      if (authError) {
+        throw new Error(authError.message)
+      }
+      
+      setSuccessMessage("Your account has been created and your 7-day trial has started! You can now sign in.")
+    } catch (err: any) {
+      console.error("Error processing signup:", err)
+      setError(err.message || "An unexpected error occurred")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const starterPlanFeatures = [
@@ -277,7 +343,7 @@ export function StartTrialForm() {
                   </div>
                   <p className="text-sm sm:text-base text-white/70 leading-relaxed">
                     You won't be charged for 7 days. After your trial, you'll be automatically enrolled in the Starter
-                    plan at $99/month. Cancel anytime during your trial period.
+                    plan at $49/month. Cancel anytime during your trial period.
                   </p>
                 </CardContent>
               </Card>
@@ -371,7 +437,7 @@ export function StartTrialForm() {
                     <div>
                       <h3 className="font-semibold text-white mb-1 sm:mb-2">After Your Trial</h3>
                       <p className="text-sm text-white/70">
-                        Automatically converts to Starter plan at $99/month. Upgrade to Professional or Enterprise
+                        Automatically converts to Starter plan at $49/month. Upgrade to Professional or Enterprise
                         anytime.
                       </p>
                     </div>

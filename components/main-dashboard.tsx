@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -9,9 +9,86 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Calendar, FileText, MapPin, MessageSquare, Phone, Plus, Upload, Users, Wallet } from "lucide-react"
 import { QuickActions } from "@/components/quick-actions"
 import { BondModal } from "@/components/modals/bond-modal"
+import { supabase } from "@/lib/supabaseClient"
 
 export function MainDashboard() {
   const [bondModalOpen, setBondModalOpen] = useState(false)
+  const [checkInsToday, setCheckInsToday] = useState(0)
+  const [courtDatesToday, setCourtDatesToday] = useState(0)
+  const [geoFenceViolations, setGeoFenceViolations] = useState(0)
+  const [paymentsDue, setPaymentsDue] = useState(0)
+  const [newClients, setNewClients] = useState(0)
+  const [newBonds, setNewBonds] = useState(0)
+  const [officeChatMessages, setOfficeChatMessages] = useState(0)
+  const [attachmentsToday, setAttachmentsToday] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      setIsLoading(true)
+      try {
+        // Fetch Check-Ins Today
+        const { data: checkInsData, error: checkInsError } = await supabase
+          .from('check_ins')
+          .select('id')
+          .gte('check_in_date', new Date().toISOString().split('T')[0])
+        if (checkInsError) console.error("Error fetching check-ins:", checkInsError)
+        else setCheckInsToday(checkInsData?.length || 0)
+
+        // Fetch Court Dates Today
+        const { data: courtDatesData, error: courtDatesError } = await supabase
+          .from('court_dates')
+          .select('id')
+          .eq('date', new Date().toISOString().split('T')[0])
+        if (courtDatesError) console.error("Error fetching court dates:", courtDatesError)
+        else setCourtDatesToday(courtDatesData?.length || 0)
+
+        // Fetch Geo-Fence Violations (placeholder as it's excluded, set to 0)
+        setGeoFenceViolations(0)
+
+        // Fetch Payments Due Today
+        const { data: paymentsData, error: paymentsError } = await supabase
+          .from('payments')
+          .select('id')
+          .eq('due_date', new Date().toISOString().split('T')[0])
+        if (paymentsError) console.error("Error fetching payments due:", paymentsError)
+        else setPaymentsDue(paymentsData?.length || 0)
+
+        // Fetch New Clients Today
+        const { data: clientsData, error: clientsError } = await supabase
+          .from('clients')
+          .select('id')
+          .gte('created_at', new Date().toISOString().split('T')[0])
+        if (clientsError) console.error("Error fetching new clients:", clientsError)
+        else setNewClients(clientsData?.length || 0)
+
+        // Fetch New Bonds Today
+        const { data: bondsData, error: bondsError } = await supabase
+          .from('bonds')
+          .select('id')
+          .gte('bond_date', new Date().toISOString().split('T')[0])
+        if (bondsError) console.error("Error fetching new bonds:", bondsError)
+        else setNewBonds(bondsData?.length || 0)
+
+        // Fetch Office Chat Messages (placeholder as it's excluded, set to 0)
+        setOfficeChatMessages(0)
+
+        // Fetch Attachments Today
+        const { data: attachmentsData, error: attachmentsError } = await supabase
+          .from('attachments')
+          .select('id')
+          .gte('upload_date', new Date().toISOString().split('T')[0])
+        if (attachmentsError) console.error("Error fetching attachments:", attachmentsError)
+        else setAttachmentsToday(attachmentsData?.length || 0)
+      } catch (error) {
+        console.error("Unexpected error fetching dashboard data:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchDashboardData()
+  }, [])
 
   return (
     <>
@@ -43,25 +120,25 @@ export function MainDashboard() {
             <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
               <StatsCard
                 title="Check-Ins Today"
-                value="0"
+                value={isLoading ? "..." : checkInsToday.toString()}
                 description="Via Mobile App"
                 icon={Phone}
                 color="bg-blue-100"
               />
               <StatsCard
                 title="Court Dates Today"
-                value="0"
+                value={isLoading ? "..." : courtDatesToday.toString()}
                 description="For Clients"
                 icon={Calendar}
                 color="bg-amber-100"
               />
               <StatsCard title="Geo-Fence Violations" value="0" description="Today" icon={MapPin} color="bg-red-100" />
-              <StatsCard title="Payments Due" value="0" description="Today" icon={Wallet} color="bg-green-100" />
+              <StatsCard title="Payments Due" value={isLoading ? "..." : paymentsDue.toString()} description="Today" icon={Wallet} color="bg-green-100" />
             </div>
 
             <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-              <StatsCard title="New Clients" value="0" description="Added Today" icon={Users} color="bg-purple-100" />
-              <StatsCard title="New Bonds" value="0" description="Added Today" icon={FileText} color="bg-indigo-100" />
+              <StatsCard title="New Clients" value={isLoading ? "..." : newClients.toString()} description="Added Today" icon={Users} color="bg-purple-100" />
+              <StatsCard title="New Bonds" value={isLoading ? "..." : newBonds.toString()} description="Added Today" icon={FileText} color="bg-indigo-100" />
               <StatsCard
                 title="Office Chat"
                 value="0"
@@ -71,7 +148,7 @@ export function MainDashboard() {
               />
               <StatsCard
                 title="Attachments"
-                value="0"
+                value={isLoading ? "..." : attachmentsToday.toString()}
                 description="Uploaded Today"
                 icon={Upload}
                 color="bg-emerald-100"

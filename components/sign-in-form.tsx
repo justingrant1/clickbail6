@@ -6,6 +6,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, Eye, EyeOff, Shield, Target, Smartphone, Lock } from "lucide-react"
+import { supabase } from "@/lib/supabaseClient"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -23,11 +24,32 @@ export function SignInForm() {
     e.preventDefault()
     setIsLoading(true)
 
-    // Simulate authentication
-    setTimeout(() => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (error) {
+        console.error("Authentication error:", error.message)
+        alert("Authentication failed: " + error.message)
+        setIsLoading(false)
+        return
+      }
+
+      if (data.session) {
+        setIsLoading(false)
+        router.push("/dashboard")
+      } else {
+        console.error("No session returned after authentication")
+        alert("Authentication failed: No session returned")
+        setIsLoading(false)
+      }
+    } catch (err) {
+      console.error("Unexpected error during authentication:", err)
+      alert("An unexpected error occurred. Please try again.")
       setIsLoading(false)
-      router.push("/dashboard")
-    }, 1000)
+    }
   }
 
   return (

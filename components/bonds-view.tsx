@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -23,106 +23,66 @@ import {
   Eye,
   Edit,
 } from "lucide-react"
+import { supabase } from "@/lib/supabaseClient"
 
-// Sample bonds data
-const bondsData = [
-  {
-    id: "1",
-    powerNumber: "123-786",
-    caseNumber: "2025-CF-1350",
-    bondDate: "06/05/25",
-    name: "Gorbell, Ryan",
-    agent: "Lucas",
-    bondAmount: 10000.0,
-    premium: 800.0,
-    balance: 0.0,
-    status: "active",
-    label: "no-cosigner",
-    courtName: "District Court",
-    insurer: "Universal Fire & Casualty",
-    office: "Main Office",
-  },
-  {
-    id: "2",
-    powerNumber: "123-93986",
-    caseNumber: "128899",
-    bondDate: "05/25/25",
-    name: "Carroll, Dessie",
-    agent: "Lucas",
-    bondAmount: 1500.0,
-    premium: 150.0,
-    balance: 100.0,
-    status: "active",
-    label: "none",
-    courtName: "Municipal Court",
-    insurer: "Universal Fire & Casualty",
-    office: "Main Office",
-  },
-  {
-    id: "3",
-    powerNumber: "123-909",
-    caseNumber: "Mosier1197",
-    bondDate: "04/05/25",
-    name: "Mosier, Matthew",
-    agent: "Lucas",
-    bondAmount: 250.0,
-    premium: 100.0,
-    balance: 0.0,
-    status: "active",
-    label: "cash-collateral",
-    courtName: "County Court",
-    insurer: "Universal Fire & Casualty",
-    office: "Main Office",
-  },
-  {
-    id: "4",
-    powerNumber: "123-771",
-    caseNumber: "accusation",
-    bondDate: "01/23/25",
-    name: "Day, Jarren",
-    agent: "Lucas",
-    bondAmount: 20000.0,
-    premium: 2000.0,
-    balance: 1350.0,
-    status: "active",
-    label: "bond-splits",
-    courtName: "Superior Court",
-    insurer: "Surety Bonding Company",
-    office: "Branch Office",
-  },
-  {
-    id: "5",
-    powerNumber: "123-123112231",
-    caseNumber: "201019091",
-    bondDate: "01/23/25",
-    name: "MORRISON, TEDRICK",
-    agent: "Lucas",
-    bondAmount: 150.0,
-    premium: 100.0,
-    balance: 0.0,
-    status: "active",
-    label: "deed-of-trust",
-    courtName: "District Court",
-    insurer: "American Surety Company",
-    office: "Main Office",
-  },
-]
+interface Bond {
+  id: string;
+  powerNumber: string;
+  caseNumber: string;
+  bondDate: string;
+  name: string;
+  agent: string;
+  bondAmount: number;
+  premium: number;
+  balance: number;
+  status: string;
+  label: string;
+  courtName: string;
+  insurer: string;
+  office: string;
+}
 
-const recentBonds = [
-  "CARROLL, DESSIE",
-  "MOSIER, MATTHEW",
-  "MOSIER, MATTHEW",
-  "CURBFEELER, OGALTHORPE",
-  "MORRISON, TEDRICK",
-  "DEMO, DEMO",
-  "FRASER, SAM",
-]
+// Initialize with empty array; data will be fetched from Supabase
+const bondsData: Bond[] = [];
+
+const recentBonds: string[] = [];
 
 export function BondsView() {
   const [selectedBonds, setSelectedBonds] = useState<string[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [showNoFileCharges, setShowNoFileCharges] = useState(false)
   const [selectedLabel, setSelectedLabel] = useState("all")
+  const [bondsDataState, setBondsDataState] = useState<Bond[]>(bondsData)
+  const [recentBondsState, setRecentBondsState] = useState<string[]>(recentBonds)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchBondsData = async () => {
+      setIsLoading(true)
+      try {
+        // Fetch all bonds data from Supabase
+        const { data: bonds, error } = await supabase
+          .from('bonds')
+          .select('*')
+        if (error) {
+          console.error("Error fetching bonds data:", error)
+          setBondsDataState([])
+        } else {
+          setBondsDataState(bonds || [])
+          // Set recent bonds (last 7 names for display)
+          const recentNames = bonds.slice(-7).map((bond: Bond) => bond.name)
+          setRecentBondsState(recentNames)
+        }
+      } catch (err) {
+        console.error("Unexpected error fetching bonds data:", err)
+        setBondsDataState([])
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchBondsData()
+  }, [])
 
   const handleSelectBond = (bondId: string) => {
     setSelectedBonds((prev) => (prev.includes(bondId) ? prev.filter((id) => id !== bondId) : [...prev, bondId]))
@@ -164,12 +124,12 @@ export function BondsView() {
     }
   }
 
-  const totalBonds = bondsData.length
-  const activeBonds = bondsData.filter((bond) => bond.status === "active").length
-  const totalBondAmount = bondsData.reduce((sum, bond) => sum + bond.bondAmount, 0)
-  const outstandingBalance = bondsData.reduce((sum, bond) => sum + bond.balance, 0)
+  const totalBonds = isLoading ? 0 : bondsDataState.length
+  const activeBonds = isLoading ? 0 : bondsDataState.filter((bond) => bond.status === "active").length
+  const totalBondAmount = isLoading ? 0 : bondsDataState.reduce((sum, bond) => sum + bond.bondAmount, 0)
+  const outstandingBalance = isLoading ? 0 : bondsDataState.reduce((sum, bond) => sum + bond.balance, 0)
 
-  const filteredBonds = bondsData.filter((bond) => {
+  const filteredBonds = bondsDataState.filter((bond) => {
     const matchesSearch =
       bond.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       bond.powerNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -317,7 +277,7 @@ export function BondsView() {
             <div className="border-t p-4">
               <h4 className="font-medium mb-2">Last 15 Bonds You Opened</h4>
               <div className="space-y-1">
-                {recentBonds.map((name, index) => (
+                {recentBondsState.map((name, index) => (
                   <Button key={index} variant="link" className="p-0 h-auto text-xs justify-start">
                     {name}
                   </Button>
@@ -691,7 +651,7 @@ export function BondsView() {
             <TabsContent value="fta">
               <Card>
                 <CardContent className="p-6 text-center py-10 text-muted-foreground">
-                  FTA (Failure to Appear) bonds will be displayed here
+                  {isLoading ? "Loading FTA bonds..." : "FTA (Failure to Appear) bonds will be displayed here"}
                 </CardContent>
               </Card>
             </TabsContent>
@@ -699,7 +659,7 @@ export function BondsView() {
             <TabsContent value="discharged">
               <Card>
                 <CardContent className="p-6 text-center py-10 text-muted-foreground">
-                  Discharged bonds will be displayed here
+                  {isLoading ? "Loading discharged bonds..." : "Discharged bonds will be displayed here"}
                 </CardContent>
               </Card>
             </TabsContent>
@@ -707,7 +667,7 @@ export function BondsView() {
             <TabsContent value="drafts">
               <Card>
                 <CardContent className="p-6 text-center py-10 text-muted-foreground">
-                  Saved draft bonds will be displayed here
+                  {isLoading ? "Loading saved draft bonds..." : "Saved draft bonds will be displayed here"}
                 </CardContent>
               </Card>
             </TabsContent>
