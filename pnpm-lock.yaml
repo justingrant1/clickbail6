@@ -92,6 +92,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: 1.1.6
         version: 1.1.6(@types/react-dom@19.0.0)(@types/react@19.0.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@stripe/stripe-js':
+        specifier: ^7.3.1
+        version: 7.3.1
       '@supabase/supabase-js':
         specifier: ^2.50.0
         version: 2.50.0
@@ -1063,6 +1066,10 @@ packages:
 
   '@radix-ui/rect@1.1.0':
     resolution: {integrity: sha512-A9+lCBZoaMJlVKcRBz2YByCG+Cp2t6nAnMnNba+XiWxnj6r4JUFqfsgwocMBZU9LPtdxC6wB56ySYpc7LQIoJg==}
+
+  '@stripe/stripe-js@7.3.1':
+    resolution: {integrity: sha512-pTzb864TQWDRQBPLgSPFRoyjSDUqpCkbEgTzpsjiTjGz1Z5SxZNXJek28w1s6Dyry4CyW4/Izj5jHE/J9hCJYQ==}
+    engines: {node: '>=12.16'}
 
   '@supabase/auth-js@2.70.0':
     resolution: {integrity: sha512-BaAK/tOAZFJtzF1sE3gJ2FwTjLf4ky3PSvcvLGEgEmO4BSBkwWKu8l67rLLIBZPDnCyV7Owk2uPyKHa0kj5QGg==}
@@ -2872,6 +2879,8 @@ snapshots:
       '@types/react-dom': 19.0.0
 
   '@radix-ui/rect@1.1.0': {}
+
+  '@stripe/stripe-js@7.3.1': {}
 
   '@supabase/auth-js@2.70.0':
     dependencies:
