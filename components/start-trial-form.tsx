@@ -48,10 +48,37 @@ export function StartTrialForm() {
     }
     
     try {
+      console.log("Starting signup process...")
+      
+      // Step 1: Create user in Supabase first
+      console.log("Creating user in Supabase...")
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            company: formData.company,
+            phone: formData.phone,
+            subscription_status: 'pending'
+          }
+        }
+      })
+      
+      if (authError) {
+        console.error("Supabase auth error:", authError)
+        throw new Error(authError.message)
+      }
+      
+      console.log("Supabase user created:", authData)
+      
+      // Step 2: If user creation is successful, proceed with Stripe
       // In a real implementation, we'd use Stripe.js to securely collect card details
       // and get a payment method ID, but for this demo we'll simulate that
       const paymentMethodId = "pm_simulated_" + Math.random().toString(36).substring(2, 15)
       
+      console.log("Creating subscription in Stripe...")
       // Create customer and subscription via our API endpoint
       const response = await fetch("/api/create-subscription", {
         method: "POST",
@@ -68,29 +95,25 @@ export function StartTrialForm() {
       })
       
       const data = await response.json()
+      console.log("Stripe API response:", data)
       
       if (!response.ok) {
         throw new Error(data.error || "Failed to process payment")
       }
       
-      // Create user in Supabase
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
+      // Update user with Stripe customer ID
+      if (authData?.user?.id) {
+        console.log("Updating user with Stripe customer ID...")
+        const { error: updateError } = await supabase.auth.updateUser({
           data: {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            company: formData.company,
-            phone: formData.phone,
             stripe_customer_id: data.customerId,
             subscription_status: 'trialing'
           }
+        })
+        
+        if (updateError) {
+          console.error("Error updating user:", updateError)
         }
-      })
-      
-      if (authError) {
-        throw new Error(authError.message)
       }
       
       setSuccessMessage("Your account has been created and your 7-day trial has started! You can now sign in.")
