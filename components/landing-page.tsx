@@ -4,6 +4,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import CTASection from "@/components/cta-section"
 import {
   Shield,
   MapPin,
@@ -570,9 +571,148 @@ export function LandingPage() {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Simple, Transparent Pricing</h2>
             <p className="text-xl text-gray-600">
-              All plans include: SSL encryption, 99.9% uptime SLA, regular backups, and 24/7 monitoring
+              Choose the plan that fits your business size. All plans include a 30-day free trial.
             </p>
           </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <Card className="p-8 border-0 shadow-lg">
+              <CardContent className="p-0">
+                <h3 className="text-2xl font-semibold text-gray-900 mb-2">Starter</h3>
+                <p className="text-5xl font-bold text-gray-900 mb-2">
+                  $99<span className="text-xl font-normal text-gray-500">/month</span>
+                </p>
+                <p className="text-gray-600 mb-6">Perfect for small bail bond operations</p>
+                <ul className="space-y-4 text-gray-600 mb-8">
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                    Up to 50 defendants
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                    Basic geo-fencing
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                    Core form templates
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                    Email support
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                    Mobile app access
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                    Basic reporting
+                  </li>
+                </ul>
+                <Button asChild className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+                  <Link href="/start-trial">Start Free Trial</Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="p-8 border-2 border-purple-600 shadow-2xl relative">
+              <Badge className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-gray-900 px-4 py-1">
+                Most Popular
+              </Badge>
+              <CardContent className="p-0">
+                <h3 className="text-2xl font-semibold text-gray-900 mb-2">Professional</h3>
+                <p className="text-5xl font-bold text-gray-900 mb-2">
+                  $199<span className="text-xl font-normal text-gray-500">/month</span>
+                </p>
+                <p className="text-gray-600 mb-6">Most popular for growing businesses</p>
+                <ul className="space-y-4 text-gray-600 mb-8">
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-purple-500 mr-2" />
+                    Up to 200 defendants
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-purple-500 mr-2" />
+                    Advanced geo-fencing
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-purple-500 mr-2" />
+                    All form templates
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-purple-500 mr-2" />
+                    Priority phone support
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-purple-500 mr-2" />
+                    Advanced analytics
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-purple-500 mr-2" />
+                    E-signature platform
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-purple-500 mr-2" />
+                    Court calendar sync
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-purple-500 mr-2" />
+                    Financial management
+                  </li>
+                </ul>
+                <Button asChild className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+                  <Link href="/start-trial">Start Free Trial</Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="p-8 border-0 shadow-lg">
+              <CardContent className="p-0">
+                <h3 className="text-2xl font-semibold text-gray-900 mb-2">Enterprise</h3>
+                <p className="text-5xl font-bold text-gray-900 mb-2">Custom</p>
+                <p className="text-gray-600 mb-6">For large operations and agencies</p>
+                <ul className="space-y-4 text-gray-600 mb-8">
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                    Unlimited defendants
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                    Custom integrations
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                    White-label options
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                    Dedicated account manager
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                    Custom training
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                    API access
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                    Advanced security
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                    Custom reporting
+                  </li>
+                </ul>
+                <Button asChild className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+                  <Link href="/contact-sales">Contact Sales</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+          <p className="text-center text-gray-600 mt-12">
+            All plans include: SSL encryption, 99.9% uptime SLA, regular backups, and 24/7 monitoring
+          </p>
         </div>
       </section>
 
@@ -635,56 +775,7 @@ export function LandingPage() {
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-purple-900 via-purple-800 to-pink-800 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center mb-6">
-            <Shield className="h-6 w-6 mr-2" />
-            <span className="text-purple-200">Risk-Free Trial • No Credit Card Required</span>
-          </div>
-
-          <h2 className="text-5xl font-bold mb-6">
-            Ready to Transform{" "}
-            <span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-              Your Business?
-            </span>
-          </h2>
-
-          <p className="text-xl text-purple-100 mb-8 max-w-3xl mx-auto">
-            Join hundreds of bail bond companies who have already modernized their operations with Clickbail. Start your
-            free trial today and see the difference in 24 hours.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Button size="lg" asChild className="bg-white text-purple-900 hover:bg-gray-100 px-8">
-              <Link href="/start-trial">
-                Start Your Free Trial <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-purple-900 px-8"
-            >
-              Schedule Demo
-            </Button>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-6 justify-center text-sm text-purple-200">
-            <div className="flex items-center">
-              <Clock className="h-4 w-4 mr-2" />
-              Setup in under 24 hours
-            </div>
-            <div className="flex items-center">
-              <Shield className="h-4 w-4 mr-2" />
-              Bank-grade security
-            </div>
-            <div className="flex items-center">
-              <ArrowRight className="h-4 w-4 mr-2" />
-              Cancel anytime
-            </div>
-          </div>
-        </div>
-      </section>
+      <CTASection />
 
       {/* Footer */}
       <footer className="bg-slate-900 text-white py-16">
