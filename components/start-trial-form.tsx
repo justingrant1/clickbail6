@@ -77,7 +77,7 @@ export function StartTrialForm() {
       setSuccessMessage("Your account has been created and your 7-day trial has started! Redirecting to sign in...")
       // Redirect to sign-in page after a short delay to allow user to read the success message
       setTimeout(() => {
-        window.location.href = "/signin";
+        window.location.href = "/sign-in";
       }, 2000);
     } catch (err: any) {
       console.error("Error processing signup:", err)
