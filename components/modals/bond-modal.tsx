@@ -39,9 +39,9 @@ export function BondModal({ open, onOpenChange, onBondAdded }: BondModalProps & 
       const { error } = await supabase.from('bonds').insert([
         {
           name: formData.clientName,
-          bondAmount: parseFloat(formData.bondAmount),
-          bondType: formData.bondType,
-          courtDate: formData.courtDate,
+          bondamount: parseFloat(formData.bondAmount),
+          bondtype: formData.bondType,
+          courtdate: formData.courtDate,
           charges: formData.charges,
           notes: formData.notes,
           status: 'active',
