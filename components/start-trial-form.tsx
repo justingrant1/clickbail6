@@ -20,10 +20,6 @@ export function StartTrialForm() {
     company: "",
     password: "",
     confirmPassword: "",
-    cardholderName: "",
-    cardNumber: "",
-    expiryDate: "",
-    cvv: "",
   })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,65 +57,27 @@ export function StartTrialForm() {
             last_name: formData.lastName,
             company: formData.company,
             phone: formData.phone,
-            subscription_status: 'pending'
+            subscription_status: 'trialing'
           }
         }
       })
       
       if (authError) {
         console.error("Supabase auth error:", authError)
-        throw new Error(authError.message)
+        if (authError.status === 422) {
+          setError("An account with this email already exists. Please sign in or use a different email.")
+        } else {
+          setError(authError.message || "Failed to create account in Supabase.")
+        }
+        setIsLoading(false)
+        return
       }
       
       console.log("Supabase user created:", authData)
-      
-      // Step 2: If user creation is successful, proceed with Stripe
-      // In a real implementation, we'd use Stripe.js to securely collect card details
-      // and get a payment method ID, but for this demo we'll simulate that
-      const paymentMethodId = "pm_simulated_" + Math.random().toString(36).substring(2, 15)
-      
-      console.log("Creating subscription in Stripe...")
-      // Create customer and subscription via our API endpoint
-      const response = await fetch("/api/create-subscription", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          customerData: {
-            name: `${formData.firstName} ${formData.lastName}`,
-            email: formData.email,
-          },
-          paymentMethodId,
-        }),
-      })
-      
-      const data = await response.json()
-      console.log("Stripe API response:", data)
-      
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to process payment")
-      }
-      
-      // Update user with Stripe customer ID
-      if (authData?.user?.id) {
-        console.log("Updating user with Stripe customer ID...")
-        const { error: updateError } = await supabase.auth.updateUser({
-          data: {
-            stripe_customer_id: data.customerId,
-            subscription_status: 'trialing'
-          }
-        })
-        
-        if (updateError) {
-          console.error("Error updating user:", updateError)
-        }
-      }
-      
       setSuccessMessage("Your account has been created and your 7-day trial has started! You can now sign in.")
     } catch (err: any) {
       console.error("Error processing signup:", err)
-      setError(err.message || "An unexpected error occurred")
+      setError(err.message || "An unexpected error occurred during sign-up. Please try again or contact support.")
     } finally {
       setIsLoading(false)
     }
@@ -276,80 +234,6 @@ export function StartTrialForm() {
                         className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-400"
                         required
                       />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Payment Information */}
-              <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
-                <CardContent className="p-4 sm:p-6">
-                  <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                    <div className="w-6 h-6 rounded border border-white/50 flex items-center justify-center">
-                      <div className="w-3 h-2 border border-white/50" />
-                    </div>
-                    <h2 className="text-lg sm:text-xl font-semibold text-white">Payment Information</h2>
-                  </div>
-
-                  <div className="space-y-4 sm:space-y-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="cardholderName" className="text-white/90">
-                        Cardholder Name
-                      </Label>
-                      <Input
-                        id="cardholderName"
-                        name="cardholderName"
-                        value={formData.cardholderName}
-                        onChange={handleInputChange}
-                        className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-400"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="cardNumber" className="text-white/90">
-                        Card Number
-                      </Label>
-                      <Input
-                        id="cardNumber"
-                        name="cardNumber"
-                        placeholder="1234 5678 9012 3456"
-                        value={formData.cardNumber}
-                        onChange={handleInputChange}
-                        className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-400"
-                        required
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="expiryDate" className="text-white/90">
-                          Expiry Date
-                        </Label>
-                        <Input
-                          id="expiryDate"
-                          name="expiryDate"
-                          placeholder="MM/YY"
-                          value={formData.expiryDate}
-                          onChange={handleInputChange}
-                          className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-400"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="cvv" className="text-white/90">
-                          CVV
-                        </Label>
-                        <Input
-                          id="cvv"
-                          name="cvv"
-                          placeholder="123"
-                          value={formData.cvv}
-                          onChange={handleInputChange}
-                          className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-400"
-                          required
-                        />
-                      </div>
                     </div>
                   </div>
                 </CardContent>

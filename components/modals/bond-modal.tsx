@@ -16,13 +16,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { supabase } from "@/lib/supabaseClient"
 
 interface BondModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function BondModal({ open, onOpenChange }: BondModalProps) {
+export function BondModal({ open, onOpenChange, onBondAdded }: BondModalProps & { onBondAdded?: () => void }) {
   const [formData, setFormData] = useState({
     clientName: "",
     bondAmount: "",
@@ -32,18 +33,40 @@ export function BondModal({ open, onOpenChange }: BondModalProps) {
     notes: "",
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Bond submitted:", formData)
-    onOpenChange(false)
-    setFormData({
-      clientName: "",
-      bondAmount: "",
-      bondType: "",
-      courtDate: "",
-      charges: "",
-      notes: "",
-    })
+    try {
+      const { error } = await supabase.from('bonds').insert([
+        {
+          name: formData.clientName,
+          bondAmount: parseFloat(formData.bondAmount),
+          bondType: formData.bondType,
+          courtDate: formData.courtDate,
+          charges: formData.charges,
+          notes: formData.notes,
+          status: 'active',
+        }
+      ])
+      if (error) {
+        console.error("Error inserting bond:", error)
+        alert("Failed to create bond. Please try again.")
+      } else {
+        onOpenChange(false)
+        setFormData({
+          clientName: "",
+          bondAmount: "",
+          bondType: "",
+          courtDate: "",
+          charges: "",
+          notes: "",
+        })
+        alert("Bond created successfully!")
+        if (onBondAdded) onBondAdded();
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err)
+      alert("An unexpected error occurred. Please try again.")
+    }
   }
 
   return (

@@ -24,6 +24,7 @@ import {
   Edit,
 } from "lucide-react"
 import { supabase } from "@/lib/supabaseClient"
+import { BondModal } from "@/components/modals/bond-modal"
 
 interface Bond {
   id: string;
@@ -55,7 +56,13 @@ export function BondsView() {
   const [bondsDataState, setBondsDataState] = useState<Bond[]>(bondsData)
   const [recentBondsState, setRecentBondsState] = useState<string[]>(recentBonds)
   const [isLoading, setIsLoading] = useState(true)
+  const [bondModalOpen, setBondModalOpen] = useState(false)
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
 
+  const refreshBonds = () => {
+    setRefreshTrigger(prev => prev + 1);
+  }
+  
   useEffect(() => {
     const fetchBondsData = async () => {
       setIsLoading(true)
@@ -82,7 +89,7 @@ export function BondsView() {
     }
 
     fetchBondsData()
-  }, [])
+  }, [refreshTrigger])
 
   const handleSelectBond = (bondId: string) => {
     setSelectedBonds((prev) => (prev.includes(bondId) ? prev.filter((id) => id !== bondId) : [...prev, bondId]))
@@ -143,11 +150,11 @@ export function BondsView() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Bonds Management</h1>
         <div className="flex gap-2">
-          <Button>
+          <Button onClick={() => setBondModalOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             New Bond - Add All Info
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => setBondModalOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             New Bond - Quick Add
           </Button>
@@ -674,6 +681,7 @@ export function BondsView() {
           </Tabs>
         </div>
       </div>
+      <BondModal open={bondModalOpen} onOpenChange={setBondModalOpen} onBondAdded={refreshBonds} />
     </div>
   )
 }
