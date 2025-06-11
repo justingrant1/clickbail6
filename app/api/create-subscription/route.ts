@@ -1,5 +1,10 @@
 import { NextResponse } from 'next/server';
-import { use_mcp_tool } from '@/lib/mcp-handlers';
+import Stripe from 'stripe';
+
+// Initialize Stripe with the secret key from environment variables
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+  apiVersion: '2025-05-28.basil', // Use the latest available API version
+});
 
 export async function POST(request: Request) {
   try {
@@ -7,78 +12,88 @@ export async function POST(request: Request) {
     const { customerData, paymentMethodId, planId, trialPeriodDays } = body;
 
     // First create a customer in Stripe
-    const customerResponse = await use_mcp_tool({
-      server_name: 'github.com/stripe/agent-toolkit',
-      tool_name: 'create_customer',
-      arguments: {
-        name: customerData.name,
-        email: customerData.email,
-      }
+    const customer = await stripe.customers.create({
+      name: customerData.name,
+      email: customerData.email,
     });
 
-    if (!customerResponse?.id) {
+    if (!customer.id) {
       return NextResponse.json(
         { error: 'Failed to create customer' },
         { status: 500 }
       );
     }
 
-    // Create a product if needed
-    // Note: In a real app, you'd have predefined products and prices
-    const productResponse = await use_mcp_tool({
-      server_name: 'github.com/stripe/agent-toolkit',
-      tool_name: 'create_product',
-      arguments: {
+    // For a real application, you would have predefined products and prices
+    // But for this example, we'll create them on demand
+    
+    // Check if product already exists
+    let product;
+    const existingProducts = await stripe.products.list({
+      active: true,
+      limit: 100,
+    });
+    
+    // Find product by name or create a new one
+    const existingProduct = existingProducts.data.find(p => p.name === 'Clickbail Starter Plan');
+    
+    if (existingProduct) {
+      product = existingProduct;
+    } else {
+      product = await stripe.products.create({
         name: 'Clickbail Starter Plan',
         description: 'Starter plan with 7-day free trial then $49/month'
-      }
-    });
-
-    if (!productResponse?.id) {
-      return NextResponse.json(
-        { error: 'Failed to create product' },
-        { status: 500 }
-      );
+      });
     }
 
-    // Create a price for the product
-    const priceResponse = await use_mcp_tool({
-      server_name: 'github.com/stripe/agent-toolkit',
-      tool_name: 'create_price',
-      arguments: {
-        product: productResponse.id,
-        unit_amount: 4900, // $49.00
-        currency: 'usd'
-      }
+    // Check if price already exists for this product
+    let price;
+    const existingPrices = await stripe.prices.list({
+      product: product.id,
+      active: true,
+      limit: 100,
     });
-
-    if (!priceResponse?.id) {
-      return NextResponse.json(
-        { error: 'Failed to create price' },
-        { status: 500 }
-      );
-    }
-
-    // Create a subscription with trial
-    // Note: In a real implementation, you would first attach the payment method to the customer
-    // and then create the subscription using that payment method
     
-    // Create a payment link instead for demonstration
-    const paymentLinkResponse = await use_mcp_tool({
-      server_name: 'github.com/stripe/agent-toolkit',
-      tool_name: 'create_payment_link',
-      arguments: {
-        price: priceResponse.id,
-        quantity: 1
-      }
+    // Find price or create a new one
+    const existingPrice = existingPrices.data.find(
+      p => p.unit_amount === 4900 && p.currency === 'usd'
+    );
+    
+    if (existingPrice) {
+      price = existingPrice;
+    } else {
+      price = await stripe.prices.create({
+        product: product.id,
+        unit_amount: 4900, // $49.00
+        currency: 'usd',
+        recurring: {
+          interval: 'month'
+        }
+      });
+    }
+
+    // Create a payment link
+    const paymentLink = await stripe.paymentLinks.create({
+      line_items: [
+        {
+          price: price.id,
+          quantity: 1,
+        },
+      ],
+      after_completion: {
+        type: 'redirect',
+        redirect: {
+          url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/dashboard`,
+        },
+      },
     });
 
     return NextResponse.json({
       success: true,
-      customerId: customerResponse.id,
-      productId: productResponse.id,
-      priceId: priceResponse.id,
-      paymentLink: paymentLinkResponse.url,
+      customerId: customer.id,
+      productId: product.id,
+      priceId: price.id,
+      paymentLink: paymentLink.url,
       message: 'Subscription created successfully with 7-day trial'
     });
     
